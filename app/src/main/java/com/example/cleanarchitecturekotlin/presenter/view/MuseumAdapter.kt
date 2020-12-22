@@ -11,6 +11,8 @@ import com.bumptech.glide.Glide
 
 import com.example.cleanarchitecturekotlin.R
 import com.example.cleanarchitecturekotlin.datas.Museum
+import com.example.cleanarchitecturekotlin.domain.usecases.BindImage
+import com.example.cleanarchitecturekotlin.domain.usecases.ItemClick
 import kotlinx.android.synthetic.main.row_museum.view.*
 
 
@@ -39,10 +41,14 @@ class MuseumAdapter(private var museums: List<Museum>) :
     class MViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         private val textViewName: TextView = view.textViewName
         private val imageView: ImageView = view.imageView
-        
+
         fun bind(museum: Museum) {
             textViewName.text = museum.title.capitalize()
-            Glide.with(imageView.context).load(museum.url).into(imageView)
+            val bindImage=BindImage()
+            bindImage.bindGlideImage(imageView,museum.url)
+            imageView.setOnClickListener(){
+                ItemClick.callClick(imageView)
+            }
         }
     }
 }
