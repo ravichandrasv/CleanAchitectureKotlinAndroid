@@ -39,6 +39,7 @@ class MuseumAdapter(private var museums: List<Museum>) :
     class MViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         private val textViewName: TextView = view.textViewName
         private val imageView: ImageView = view.imageView
+        
         fun bind(museum: Museum) {
             textViewName.text = museum.title.capitalize()
             Glide.with(imageView.context).load(museum.url).into(imageView)
