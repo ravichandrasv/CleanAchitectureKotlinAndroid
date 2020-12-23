@@ -1,6 +1,7 @@
 package com.example.cleanarchitecturekotlin.presenter.framework
 
 import com.example.cleanarchitecturekotlin.presenter.utils.Constants.API_BASE_URL
+import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -21,7 +22,8 @@ object ApiClient {
         var httpClient: OkHttpClient.Builder = OkHttpClient.Builder()
         httpClient.addInterceptor(interceptor())
 
-        var retrofit: Retrofit = builder.client(httpClient.build()).build()
+        var retrofit: Retrofit = builder.client(httpClient.build()).addCallAdapterFactory(
+            RxJava2CallAdapterFactory.create()).build()
         servicesApiInterface = retrofit.create(
             ServicesApiInterface::class.java
         )

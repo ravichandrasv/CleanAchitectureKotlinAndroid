@@ -3,22 +3,20 @@ package com.example.cleanarchitecturekotlin.presenter.view
 import android.os.Bundle
 import android.view.View
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-
 import com.example.cleanarchitecturekotlin.R
-import com.example.cleanarchitecturekotlin.domain.di.Injection
-import com.example.cleanarchitecturekotlin.datas.Museum
-import com.example.cleanarchitecturekotlin.domain.usecases.MuseumViewModel
+import com.example.cleanarchitecturekotlin.data.Museum
+import com.example.cleanarchitecturekotlin.presenter.viewmodel.MuseumViewModel
+import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_museum.*
-
-
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MuseumActivity : BaseActivity() {
 
-    private lateinit var viewModel: MuseumViewModel
     private lateinit var adapter: MuseumAdapter
-
+    private val viewModel: MuseumViewModel by viewModel()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -29,29 +27,33 @@ class MuseumActivity : BaseActivity() {
         setupUI()
     }
 
-    //ui
     private fun setupUI() {
         adapter = MuseumAdapter(viewModel.museums.value ?: emptyList())
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.adapter = adapter
     }
 
-    //view model
     private fun setupViewModel() {
-        viewModel = ViewModelProvider(
-            this,
-            Injection.provideViewModelFactory()
-        ).get(MuseumViewModel::class.java)
 
         viewModel.museums.observe(this, renderMuseums)
 
+
     }
 
-    //observers
     private val renderMuseums = Observer<List<Museum>> {
-        adapter.update(it)
-    }
+        val abs: Observable<List<Museum>> = Observable.just(it)
+        abs.observeOn(AndroidSchedulers.mainThread())
+            .doOnNext { progress_circular.visibility = View.VISIBLE }
+            .observeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                progress_circular.visibility = View.GONE
+                adapter.update(it)
 
+
+            }
+
+    }
 
 
     override fun onResume() {

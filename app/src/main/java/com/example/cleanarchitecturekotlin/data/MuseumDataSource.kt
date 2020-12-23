@@ -1,4 +1,4 @@
-package com.example.cleanarchitecturekotlin.datas
+package com.example.cleanarchitecturekotlin.data
 
 import com.example.cleanarchitecturekotlin.presenter.framework.OperationCallback
 

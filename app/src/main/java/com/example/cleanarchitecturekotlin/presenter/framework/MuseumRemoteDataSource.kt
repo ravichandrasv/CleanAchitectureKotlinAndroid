@@ -1,42 +1,41 @@
 package com.example.cleanarchitecturekotlin.presenter.framework
 
-import com.example.cleanarchitecturekotlin.datas.Museum
-import com.example.cleanarchitecturekotlin.datas.MuseumDataSource
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import com.example.cleanarchitecturekotlin.data.Museum
+import com.example.cleanarchitecturekotlin.data.MuseumDataSource
+import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.Disposable
+import io.reactivex.schedulers.Schedulers
 
 class MuseumRemoteDataSource(apiClient: ApiClient) : MuseumDataSource {
 
-    private var call: Call<MuseumResponse>? = null
+    private var call: Observable<MuseumResponse>? = null
     private val service = ApiClient.build()
-
+    var disposable: Disposable? = null
     override fun retrieveMuseums(callback: OperationCallback<Museum>) {
 
         call = service?.museums()
-        call?.enqueue(object : Callback<MuseumResponse> {
-            override fun onFailure(call: Call<MuseumResponse>, t: Throwable) {
-                callback.onError(t.message)
-            }
 
-            override fun onResponse(
-                call: Call<MuseumResponse>,
-                response: Response<MuseumResponse>
-            ) {
-                response.body()?.let {
-                    if (response.isSuccessful && (it.isSuccess())) {
-                        callback.onSuccess(it.data)
-                    } else {
-                        callback.onError(it.msg)
-                    }
+        disposable = call?.subscribeOn(Schedulers.io())?.observeOn(AndroidSchedulers.mainThread())
+            ?.subscribe(
+                {
+                    callback.onSuccess(it.data)
                 }
-            }
-        })
+                ,
+                {t->
+                    callback.onError(t.message)
+                }
+            )
+
+
     }
 
     override fun cancel() {
-        call?.let {
-            it.cancel()
+        call.let {it.toString()
+
         }
     }
+
 }
+
+

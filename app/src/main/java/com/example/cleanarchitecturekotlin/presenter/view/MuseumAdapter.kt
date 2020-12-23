@@ -6,13 +6,10 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-
-
 import com.example.cleanarchitecturekotlin.R
-import com.example.cleanarchitecturekotlin.datas.Museum
-import com.example.cleanarchitecturekotlin.domain.usecases.BindImage
-import com.example.cleanarchitecturekotlin.domain.usecases.ItemClick
+import com.example.cleanarchitecturekotlin.data.Museum
+import com.example.cleanarchitecturekotlin.presenter.utils.BindImage
+import com.example.cleanarchitecturekotlin.presenter.utils.ItemClick
 import kotlinx.android.synthetic.main.row_museum.view.*
 
 
@@ -44,7 +41,7 @@ class MuseumAdapter(private var museums: List<Museum>) :
 
         fun bind(museum: Museum) {
             textViewName.text = museum.title.capitalize()
-            val bindImage=BindImage()
+            val bindImage= BindImage()
             bindImage.bindGlideImage(imageView,museum.url)
             imageView.setOnClickListener(){
                 ItemClick.callClick(imageView)

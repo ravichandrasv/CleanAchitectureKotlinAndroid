@@ -1,4 +1,4 @@
-package com.example.cleanarchitecturekotlin.domain.usecases
+package com.example.cleanarchitecturekotlin.presenter.utils
 
 import android.widget.ImageView
 import com.bumptech.glide.Glide
